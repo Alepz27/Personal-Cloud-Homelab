@@ -1,0 +1,22 @@
+# Never publish runtime secrets or private overrides
+.env
+.env.*
+!.env.example
+docker-compose.yml
+docker-compose.override.yml
+compose.yml
+compose.yaml
+
+# Backups, logs and database/media exports
+backups/
+*.dump
+*.sql
+*.log
+*.tar
+*.zip
+
+# Local system/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
