@@ -1,0 +1,46 @@
+# Sanitized architecture example — not the original private deployment file.
+# Confirm the official Compose specification for the Immich version you deploy.
+
+name: personal-cloud-homelab
+
+services:
+  immich-server:
+    image: ${IMMICH_SERVER_IMAGE}
+    ports:
+      - "${IMMICH_HTTP_PORT}:2283"
+    environment:
+      DB_HOSTNAME: database
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE_NAME: ${DB_DATABASE_NAME}
+      REDIS_HOSTNAME: redis
+    volumes:
+      - ${UPLOAD_LOCATION}:/usr/src/app/upload
+    depends_on:
+      - database
+      - redis
+    restart: unless-stopped
+
+  immich-machine-learning:
+    image: ${IMMICH_MACHINE_LEARNING_IMAGE}
+    volumes:
+      - ${MODEL_CACHE_LOCATION}:/cache
+    restart: unless-stopped
+
+  redis:
+    image: ${REDIS_IMAGE}
+    restart: unless-stopped
+
+  database:
+    image: ${POSTGRES_IMAGE}
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE_NAME}
+    volumes:
+      - ${DB_DATA_LOCATION}:/var/lib/postgresql/data
+    restart: unless-stopped
+
+networks:
+  default:
+    name: personal-cloud-internal
